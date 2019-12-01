@@ -1,0 +1,35 @@
+import urllib.request
+from bs4 import BeautifulSoup
+
+
+def get_html(url):
+    response = urllib.request.urlopen(url)
+    return response.read()
+
+def parse(html):
+    soup = BeautifulSoup(html)
+    ul_class = soup.find('ul', class_='row unstyled')
+
+
+    projects = []
+
+    for row in ul_class.find_all('li'):
+        span_cl = row.find_all('span')
+
+        projects.append({
+            'title': span_cl[0].a.text,
+            'price': span_cl[1].text.strip()
+            # 'availability': [avail.text for avail in span_cl[0].span.find_all('')]
+        })
+
+
+    for project in projects:
+        print(project)
+
+
+def main():
+    parse(get_html('http://inoran-goods.com/?mode=srh&cid=&keyword='))
+
+
+if __name__ == '__main__':
+    main()
