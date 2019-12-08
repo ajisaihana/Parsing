@@ -1,3 +1,4 @@
+import csv
 import urllib.request
 from bs4 import BeautifulSoup
 
@@ -33,6 +34,14 @@ def parse(html):
 
     return projects
 
+def save(projects, path):
+    with open(path, 'w', encoding="utf-16") as csvfile:
+        writer = csv.writer(csvfile)
+        writer.writerow(("title", "price"))
+
+        for project in projects:
+            writer.writerow((project['title'], (project['price'])))
+
 
 def main():
     page_count = get_page_count(get_html(base_url))
@@ -45,10 +54,7 @@ def main():
         print("Parsing %d%%" % (page / page_count * 100))
         projects.extend(parse(get_html(base_url + '?mode=srh&cid=&keyword=&page=%d' % page)))
 
-    for project in projects:
-        print(project)
-
-
+    save(projects, 'inrnshop.csv')
 
 if __name__ == '__main__':
     main()
